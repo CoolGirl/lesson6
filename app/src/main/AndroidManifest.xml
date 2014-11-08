@@ -13,15 +13,30 @@
         <activity
             android:name=".FeedActivity"
             android:label="@string/title_activity_feed" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".DescriptionActivity"
             android:label="@string/title_activity_description" >
+        </activity>
+
+        <service
+            android:name=".FeedFetchingService"
+            android:exported="false" >
+        </service>
+
+        <provider
+            android:name=".FeedContentProvider"
+            android:authorities="mob_dev_lesson2.katunina.ctddev.ifmo.ru.rss_readerhw5.feeds"
+            android:enabled="true">
+        </provider>
+
+        <activity
+            android:name=".ChannelsActivity"
+            android:label="@string/title_activity_channels" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

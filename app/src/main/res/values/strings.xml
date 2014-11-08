@@ -4,7 +4,14 @@
     <string name="app_name">RSS-reader (HW5)</string>
     <string name="title_activity_feed">FeedActivity</string>
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_add_channel">Add a channel</string>
     <string name="title_activity_description">DescriptionActivity</string>
+    <string name="title_activity_channels">ChannelsActivity</string>
+    <string name="dlgAdd_title">Add a channel</string>
+    <string name="btnAdd_text">Add</string>
+    <string name="btnSave_text">Save</string>
+    <string name="btnCancel_text">Cancel</string>
+    <string name="edtUrl_hint">Channel URL</string>
+    <string name="edtName_hint">Channel name</string>
 
 </resources>
