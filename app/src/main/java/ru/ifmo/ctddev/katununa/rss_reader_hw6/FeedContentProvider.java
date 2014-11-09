@@ -1,11 +1,10 @@
-package mob_dev_lesson2.katunina.ctddev.ifmo.ru.rss_readerhw5;
+package ru.ifmo.ctddev.katununa.rss_reader_hw6;
 
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
-import android.graphics.Paint;
 import android.net.Uri;
 
 public class FeedContentProvider extends ContentProvider {
@@ -17,10 +16,13 @@ public class FeedContentProvider extends ContentProvider {
     private static final int CHANNELS = 10;
     private static final int NEWS = 20;
 
-    public static final String AUTHORITY = "mob_dev_lesson2.katunina.ctddev.ifmo.ru.rss_readerhw5.feeds";
+    public static final String AUTHORITY = "ru.ifmo.ctddev.katununa.rss_reader_hw6.feeds";
 
     private static final String BASE_CHANNELS = "channels";
     private static final String BASE_NEWS = "news";
+
+    public static final Uri CHANNELS_URI = Uri.parse("content://" + AUTHORITY + "/" + BASE_CHANNELS);
+    public static final Uri NEWS_URI = Uri.parse("content://" + AUTHORITY + "/" + BASE_NEWS);
 
     public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
             + "/feeds";
@@ -28,16 +30,19 @@ public class FeedContentProvider extends ContentProvider {
             + "/news";
 
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+
     static {
         sURIMatcher.addURI(AUTHORITY, BASE_CHANNELS, CHANNELS);
-        sURIMatcher.addURI(AUTHORITY, BASE_NEWS, NEWS);
+        sURIMatcher.addURI(AUTHORITY, BASE_NEWS + "/#", NEWS);
     }
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         int uriType = sURIMatcher.match(uri);
         if (uriType == CHANNELS) {
-            return database.deleteChannel(Long.parseLong(uri.getLastPathSegment())) ? 1 : 0;
+            int result = database.deleteChannel(Long.parseLong(selection)) ? 1 : 0;
+            getContext().getContentResolver().notifyChange(uri, null);
+            return result;
         }
         throw new UnsupportedOperationException();
     }
@@ -53,6 +58,7 @@ public class FeedContentProvider extends ContentProvider {
         long id = -1;
         if (uriType == NEWS) {
             id = database.createNews(values);
+            getContext().getContentResolver().notifyChange(Uri.parse(CHANNELS_URI + "/" + values.getAsLong(DBAdapter.KEY_NEWS_CHANNEL_ID)), null);
         } else if (uriType == CHANNELS) {
             id = database.createChannel(values);
         }
@@ -68,7 +74,7 @@ public class FeedContentProvider extends ContentProvider {
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
-            String[] selectionArgs, String sortOrder) {
+                        String[] selectionArgs, String sortOrder) {
         int uriType = sURIMatcher.match(uri);
         Cursor result = null;
         if (uriType == NEWS) {
@@ -85,10 +91,10 @@ public class FeedContentProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection,
-            String[] selectionArgs) {
+                      String[] selectionArgs) {
         int uriType = sURIMatcher.match(uri);
         if (uriType != CHANNELS) throw new UnsupportedOperationException();
-        long id = Long.parseLong(uri.getLastPathSegment());
+        long id = values.getAsLong(DBAdapter.KEY_ID);
         int result = database.changeChannel(values, id) ? 1 : 0;
         getContext().getContentResolver().notifyChange(uri, null);
         return result;

@@ -1,4 +1,4 @@
-package mob_dev_lesson2.katunina.ctddev.ifmo.ru.rss_readerhw5;
+package ru.ifmo.ctddev.katununa.rss_reader_hw6;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

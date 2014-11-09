@@ -1,10 +1,8 @@
-package mob_dev_lesson2.katunina.ctddev.ifmo.ru.rss_readerhw5;
+package ru.ifmo.ctddev.katununa.rss_reader_hw6;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.webkit.WebView;
 
 

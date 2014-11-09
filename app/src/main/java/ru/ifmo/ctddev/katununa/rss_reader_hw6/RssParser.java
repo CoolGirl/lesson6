@@ -1,7 +1,6 @@
-package mob_dev_lesson2.katunina.ctddev.ifmo.ru.rss_readerhw5;
+package ru.ifmo.ctddev.katununa.rss_reader_hw6;
 
 import android.os.AsyncTask;
-import android.text.Html;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -13,17 +12,15 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -42,6 +39,11 @@ public class RssParser extends DefaultHandler {
          void onFeedParsed(List<FeedItem> feedItems);
     }
 
+    private static HashSet<String> win1251Hosts = new HashSet<>();
+    static {
+        win1251Hosts.add("bash");
+    }
+
     class GetFeedTask extends AsyncTask<String, Void, Void> {
 
         @Override
@@ -51,7 +53,13 @@ public class RssParser extends DefaultHandler {
                 HttpGet request = new HttpGet(URI.create(strings[0]));
                 HttpResponse response = client.execute(request);
                 HttpEntity e = response.getEntity();
-                Reader r = new InputStreamReader(e.getContent(), "Windows-1251");
+                String encoding = "UTF-8";
+                for (String host : win1251Hosts)
+                if (strings[0].contains(host)) {
+                    encoding = "Windows-1251";
+                    break;
+                }
+                Reader r = new InputStreamReader(e.getContent(), encoding);
                 SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
                 SAXParser newSAXParser = saxParserFactory.newSAXParser();
                 XMLReader xmlReader = newSAXParser.getXMLReader();
@@ -76,7 +84,7 @@ public class RssParser extends DefaultHandler {
 
     @Override
     public void startDocument() throws SAXException {
-        feedItems = new ArrayList<FeedItem>();
+        feedItems = new ArrayList<>();
     }
 
     @Override

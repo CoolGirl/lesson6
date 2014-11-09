@@ -5,7 +5,7 @@ android {
     buildToolsVersion "20.0.0"
 
     defaultConfig {
-        applicationId "mob_dev_lesson2.katunina.ctddev.ifmo.ru.rss_readerhw5"
+        applicationId "ru.ifmo.ctddev.katununa.rss_readerhw5"
         minSdkVersion 15
         targetSdkVersion 20
         versionCode 1

@@ -1,9 +1,11 @@
-package mob_dev_lesson2.katunina.ctddev.ifmo.ru.rss_readerhw5;
+package ru.ifmo.ctddev.katununa.rss_reader_hw6;
 
 import android.app.IntentService;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 
 import java.util.List;
 
@@ -18,20 +20,12 @@ public class FeedFetchingService extends IntentService {
     // TODO: Rename actions, choose action names that describe tasks that this
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     private static final String ACTION_UPDATE_CHANNEL
-            = "mob_dev_lesson2.katunina.ctddev.ifmo.ru.rss_readerhw5.action.updateChannel";
+            = "ru.ifmo.ctddev.katununa.rss_readerhw5.action.updateChannel";
     private static final String ACTION_UPDATE_ALL_CHANNELS
-            = "mob_dev_lesson2.katunina.ctddev.ifmo.ru.rss_readerhw5.action.updateAllChannels";
+            = "ru.ifmo.ctddev.katununa.rss_readerhw5.action.updateAllChannels";
 
-    // TODO: Rename parameters
-    private static final String CHANNEL_ID = "mob_dev_lesson2.katunina.ctddev.ifmo.ru.rss_readerhw5.extra.channel_id";
+    private static final String CHANNEL_ID = "ru.ifmo.ctddev.katununa.rss_readerhw5.extra.channel_id";
 
-    /**
-     * Starts this service to perform action Foo with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    // TODO: Customize helper method
     public static void startActionUpdateChannel(Context context, long channelId) {
         Intent intent = new Intent(context, FeedFetchingService.class);
         intent.setAction(ACTION_UPDATE_CHANNEL);
@@ -65,10 +59,6 @@ public class FeedFetchingService extends IntentService {
 
     public static final String BROADCAST_ACTION_CHANNEL_UPDATED = "channel updated";
 
-    /**
-     * Handle action Foo in the provided background thread with the provided
-     * parameters.
-     */
     private void handleActionUpdateChannel(final long channelId) {
         final DBAdapter db = DBAdapter.getOpenedInstance(this);
         String url = db.getUrlByChannelId(channelId);
@@ -77,26 +67,27 @@ public class FeedFetchingService extends IntentService {
                 @Override
                 public void onFeedParsed(List<FeedItem> feedItems) {
                     for (FeedItem item : feedItems) {
-                        News n = new News(-1, item.title, item.description, item.link, System.currentTimeMillis() / 1000);
-                        db.createNews(n, channelId);
+                        ContentValues values = new ContentValues();
+                        values.put(DBAdapter.KEY_NEWS_DESCRIPTION, item.description);
+                        values.put(DBAdapter.KEY_NEWS_TITLE, item.title);
+                        values.put(DBAdapter.KEY_NEWS_URL, item.link);
+                        values.put(DBAdapter.KEY_NEWS_CHANNEL_ID, channelId);
+                        values.put(DBAdapter.KEY_NEWS_TIME, System.currentTimeMillis() / 1000);
+                        getContentResolver().insert(Uri.parse(FeedContentProvider.NEWS_URI.toString() + "/" + channelId), values);
                     }
                     Intent broadcastIntent = new Intent();
                     broadcastIntent.setAction(BROADCAST_ACTION_CHANNEL_UPDATED);
                     broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
                     broadcastIntent.putExtra(CHANNEL_ID, channelId);
                     sendBroadcast(broadcastIntent);
+                    getContentResolver().notifyChange(Uri.parse(FeedContentProvider.NEWS_URI.toString() + "/" + channelId), null);
                 }
             };
             new RssParser(callback, url);
         }
     }
 
-    /**
-     * Handle action Baz in the provided background thread with the provided
-     * parameters.
-     */
     private void handleActionUpdateAllChannels() {
-        // TODO: Handle action Baz
         final DBAdapter db = DBAdapter.getOpenedInstance(this);
         Cursor c = db.getAllChannels();
         if (!c.moveToFirst()) return;

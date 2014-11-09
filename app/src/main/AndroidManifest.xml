@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="mob_dev_lesson2.katunina.ctddev.ifmo.ru.rss_readerhw5" >
+    package="ru.ifmo.ctddev.katununa.rss_reader_hw6" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -26,7 +26,7 @@
 
         <provider
             android:name=".FeedContentProvider"
-            android:authorities="mob_dev_lesson2.katunina.ctddev.ifmo.ru.rss_readerhw5.feeds"
+            android:authorities="ru.ifmo.ctddev.katununa.rss_reader_hw6.feeds"
             android:enabled="true">
         </provider>
 

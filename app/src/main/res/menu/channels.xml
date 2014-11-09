@@ -1,7 +1,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="mob_dev_lesson2.katunina.ctddev.ifmo.ru.rss_readerhw5.ChannelsActivity" >
+    tools:context="ru.ifmo.ctddev.katununa.rss_reader_hw6.ChannelsActivity" >
     <item android:id="@+id/action_add"
+        android:icon="@android:drawable/ic_menu_add"
         android:title="@string/action_add_channel"
         android:showAsAction="ifRoom"/>
 </menu>

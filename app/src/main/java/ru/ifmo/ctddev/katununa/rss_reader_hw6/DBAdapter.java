@@ -1,4 +1,4 @@
-package mob_dev_lesson2.katunina.ctddev.ifmo.ru.rss_readerhw5;
+package ru.ifmo.ctddev.katununa.rss_reader_hw6;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -125,15 +125,15 @@ public class DBAdapter {
 
     public Cursor getNewsByChannelId(long channelId){
         return db.query(TABLE_NAME_NEWS, new String[] {KEY_ID,KEY_NEWS_URL,KEY_NEWS_DESCRIPTION,KEY_NEWS_TITLE},
-    KEY_NEWS_CHANNEL_ID + "=" +channelId,null,null,null,KEY_NEWS_TIME + "DESC");
+    KEY_NEWS_CHANNEL_ID + "=" +channelId,null,null,null,KEY_NEWS_TIME + " DESC");
 }
 
     public Cursor getAllChannels(){
-        return db.query(TABLE_NAME_CHANNELS,new String [] {KEY_ID},null,null,null,null,null);
+        return db.query(TABLE_NAME_CHANNELS,new String [] {KEY_ID, KEY_CHANNELS_NAME, KEY_CHANNELS_URL},null,null,null,null,null);
     }
 
     public long createNews(ContentValues news) {
-        return db.insert(TABLE_NAME_CHANNELS,null,news);
+        return db.insert(TABLE_NAME_NEWS,null,news);
     }
 
     public long createNews(News news, long channelId){
